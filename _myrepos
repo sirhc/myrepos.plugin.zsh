@@ -1,3 +1,5 @@
+#compdef _myrepos mr
+
 function _myrepos_commands() {
     local -a commands
     commands=(
@@ -48,37 +50,30 @@ function _myrepos_bootstrap() {
         && return 0
 }
 
-function _myrepos() {
-    local line ret=0
+_arguments -C \
+    '(-d --directory)'{-d,--directory}'+[Specifies the topmost directory that mr should work in]:<directory>:_path_files -/' \
+    '(-c --config)'{-c+,--config=}'[Use the specified mrconfig file]:<mrconfig>:_path_files' \
+    '(-f --force)'{-f,--force}'[Force mr to act on repositories that would normally be skipped due to their configuration]' \
+    '--force-env[Force mr to execute even though potentially dangerous environment variables are set]' \
+    '(-v --verbose)'{-v,--verbose}'[Be verbose]' \
+    '(-m --minimal)'{-m,--minimal}'[Minimise output]' \
+    '(-q --quiet)'{-q,--quiet}'[Be quiet]' \
+    '(-k --insecure)'{-k,--insecure}'[Accept untrusted SSL certificates when bootstrapping]' \
+    '(-s --stats)'{-s,--stats}'[Expand the statistics line displayed at the end]' \
+    '(-i --interactive)'{-i,--interactive}'[Interactive mode]' \
+    '(-n --no-recurse)'{-n+,--no-recurse=}'[Limit recursion into repositories]:[number]' \
+    '(-j --jobs)'{-j+,--jobs=}'[Run the specified number of jobs in parallel]:[number]' \
+    '--cache[Saves the command output and return values]' \
+    '--cached[Prints the cached output instead of executing the commands]' \
+    '--uncache[Remove the cached output before executing any commands]' \
+    '--top[Change directory to the top of the repo before running any commands]' \
+    '(-t --trust-all)'{-t,--trust-all}'[Trust all mrconfig files]' \
+    '1:command:_myrepos_commands' \
+    '*::arg:->args' \
+    && ret=0
 
-    _arguments -C \
-        '(-d --directory)'{-d,--directory}'+[Specifies the topmost directory that mr should work in]:<directory>:_path_files -/' \
-        '(-c --config)'{-c+,--config=}'[Use the specified mrconfig file]:<mrconfig>:_path_files' \
-        '(-f --force)'{-f,--force}'[Force mr to act on repositories that would normally be skipped due to their configuration]' \
-        '--force-env[Force mr to execute even though potentially dangerous environment variables are set]' \
-        '(-v --verbose)'{-v,--verbose}'[Be verbose]' \
-        '(-m --minimal)'{-m,--minimal}'[Minimise output]' \
-        '(-q --quiet)'{-q,--quiet}'[Be quiet]' \
-        '(-k --insecure)'{-k,--insecure}'[Accept untrusted SSL certificates when bootstrapping]' \
-        '(-s --stats)'{-s,--stats}'[Expand the statistics line displayed at the end]' \
-        '(-i --interactive)'{-i,--interactive}'[Interactive mode]' \
-        '(-n --no-recurse)'{-n+,--no-recurse=}'[Limit recursion into repositories]:[number]' \
-        '(-j --jobs)'{-j+,--jobs=}'[Run the specified number of jobs in parallel]:[number]' \
-        '--cache[Saves the command output and return values]' \
-        '--cached[Prints the cached output instead of executing the commands]' \
-        '--uncache[Remove the cached output before executing any commands]' \
-        '--top[Change directory to the top of the repo before running any commands]' \
-        '(-t --trust-all)'{-t,--trust-all}'[Trust all mrconfig files]' \
-        '1:command:_myrepos_commands' \
-        '*::arg:->args' \
-        && ret=0
-
-    case "$line[1]" in
-        run) _myrepos_run ;;
-        bootstrap) _myrepos_bootstrap ;;
-        register) _myrepos_register ;;
-    esac
-
-    return ret
-}
-compdef _myrepos mr
+case "$words[1]" in
+    run) _myrepos_run ;;
+    bootstrap) _myrepos_bootstrap ;;
+    register) _myrepos_register ;;
+esac
